@@ -1,0 +1,1263 @@
+---
+bibliography: bio.bib
+csl: harvard-cite-them-right.csl
+title: Future Spatial Data Scientist's Group Project
+execute:
+  echo: false
+  freeze: true
+format:
+  html:
+    theme:
+      - minty
+      - css/web.scss
+    code-copy: true
+    code-link: true
+    toc: true
+    toc-title: On this page
+    toc-depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+  pdf:
+    include-in-header:
+      text: |
+        \addtokomafont{disposition}{\rmfamily}
+    header-includes:
+      - '\usepackage{xcolor}'
+      - '\definecolor{myblue}{RGB}{0,0,255}'
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+      - heightrounded
+    toc: false
+    number-sections: false
+    colorlinks: true
+    highlight-style: github
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.15.2
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+# Declaration of Authorship {.unnumbered .unlisted}
+
+We, Future Spatial Data Scientist, confirm that the work presented in this assessment is our own. Where information has been derived from other sources, we confirm that this has been indicated in the work. Where a Large Language Model such as ChatGPT has been used we confirm that we have made its contribution to the final submission clear.
+
+Date: 2023/12/18
+
+Student Numbers:   
+23060146  
+23083058  
+23058858  
+23125714  
+23064414  
+
+                 
+
+{{< pagebreak >}}
+
+```{python}
+# Download biobib
+import requests
+url = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/bio.bib"
+down_res = requests.get(url)
+with open("bio.bib",'wb') as file:
+    file.write(down_res.content)
+
+url2 = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/harvard-cite-them-right.csl"
+down_res = requests.get(url2)
+with open("harvard-cite-them-right.csl",'wb') as file:
+    file.write(down_res.content)
+```
+
+# Response to Questions
+
+```{python}
+# Package required
+import pandas as pd
+import matplotlib.pyplot as plt
+import geopandas as gpd
+from shapely.geometry import Point, Polygon
+import seaborn as sns
+
+# Set the file path
+listings_2019_path = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/listings_2019.csv"
+listings_2020_path = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/listings_2020.csv"
+listings_2021_path = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/listings_2020.csv"
+
+# Read data
+listings_2019 = pd.read_csv(listings_2019_path)
+listings_2020 = pd.read_csv(listings_2020_path)
+listings_2021 = pd.read_csv(listings_2021_path)
+```
+
+## 1. Who collected the data?
+The data was collected by Wentao Lei from Airbnb(http://insideairbnb.com/) and ONS website.
+
+## 2. Why did they collect it?
+The data was collected for a study titled 'Opportunities and Risks arising from Covid-19,' aimed at understanding how Covid-19 has affected London's rental market. To do this, it's important to look at Covid-19 case and death numbers because they show how the pandemic has impacted people's decisions on renting. We're checking how Airbnb listings have changed over time and if these changes are linked to the pandemic's spread. We also want to see if apartments leaving Airbnb are being rented out long-term instead. Including health data helps explain why the rental market moves in certain ways during the pandemic.
+The research also involves examining the entry to and exit from the Airbnb marketplace by comparing snapshots of London's rental data at different time points. The goal is to assess how the pandemic has influenced these markets and to make inferences about the movement of properties between Airbnb and the long-term rental sector. This requires making reasonable assumptions, such as whether all flats withdrawn from Airbnb are re-entered into the long-term rental market, and these assumptions need to be documented and justified within the study.
+
+## 3. How was the data collected?  
+Although the exact methods of data collection are not specified in the information provided, it is inferred that Airbnb data may have been harvested from public listings on the Airbnb platform or through an API made available by Airbnb (http://insideairbnb.com/). For the COVID-19 infection and death data, the likely source is the Office for National Statistics' (ONS) website. These datasets have undergone a rigorous data cleaning process, an essential step to ensure accuracy and reliability. The data cleaning involved removing duplicates, handling missing values, correcting inconsistencies, and filtering irrelevant information to hone in on pertinent data points. Moreover, to enable a more granular analysis, the Airbnb dataset was further refined by selecting listings from February, April, June, August, October, and December of 2020 as a detailed time-scale for subsequent examination.
+
+The data analysis techniques are illustrated in the `Covid-19.py` script, which include reading CSV files for structured data storage, merging datasets to correlate diverse sources of information, employing geospatial data, and generating visualizations for an enhanced interpretive experience.
+
+Python, a staple in data science, is utilized for these tasks, with libraries such as Pandas for data manipulation and analysis; Matplotlib and Seaborn for visualization; and GeoPandas for geospatial data handling; Functions like `pd.read_csv()` read data from CSV files, `gpd.read_file()` is used for geospatial data, and the `plot` method creates maps and other graphical data representations. 
+
+## London Map
+
+```{python}
+# Read GeoJson File to Geopandas
+url3 = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/neighbourhoods.json"
+down_res = requests.get(url3)
+with open("neighbourhoods.geojson",'wb') as file:
+    
+    file.write(down_res.content)
+London = gpd.read_file('neighbourhoods.geojson')
+London.plot("neighbourhood")
+plt.show()
+```
+
+After cleaning, the data could be structured for analysis, statistical tests were performed, and the findings were visualized through graphs and maps to reveal the geographical distribution and trends of COVID-19's impact on rental markets.
+
+## 4. How does the method of collection impact the completeness and/or accuracy of its representation of the process it seeks to study, and what wider issues does this raise?
+
+Using "last comment data" to estimate the rental date is an approximation. This may introduce inaccuracies as the rental date may not exactly match the date of the last review. The exact date of the rental may be earlier or later than the last review date, meaning the findings may not accurately reflect the actual rental market.
+
+This error may affect the long-term rental market differently than the short-term rental market. In long-term rental markets, where rentals last for longer periods of time, errors in rental dates may be more significant, affecting the completeness and accuracy of the study. In the short-term rental market, the rental duration is shorter, so this error may be relatively small and will not have a big impact on the study.
+
+Taken together, conclusions based on approximate data may not apply to all rental situations. For example, errors may be more significant in certain areas or specific rental types, so caution is needed when generalizing findings. The accuracy of research is limited by data collection methods, and policymakers and market participants need to be aware of these limitations so that they can be considered when making decisions.
+
+## 5. What ethical considerations does the use of this data raise? 
+Privacy and Data Protection: The use of personal data, such as names, locations, and other identifying information, raises significant privacy concerns. Ensuring that the data is anonymized and does not violate individuals' privacy is crucial. This is in line with the principles discussed in @cite7, who emphasize the importance of anonymization in big data.
+
+Impact on Stakeholders: Releasing detailed Airbnb data can have various impacts:
+
+Hosts (Merchants): They might face privacy breaches or unwanted exposure. Additionally, competitors or local authorities could use this data against them, as indicated by @cite3 in their study on the competitive dynamics in the hospitality industry.
+
+Tourists: If their travel patterns or stays are revealed, it could lead to privacy violations or security risks, which @cite4 explore in their work on the privacy concerns in urban analytics.
+
+Government/Authorities: The data might reveal regulatory non-compliances or tax evasion, leading to legal actions or policy changes, as discussed by @cite2 in the context of digital markets regulation.
+
+Accuracy and Misinterpretation: Ensuring the data's accuracy is vital, as incorrect data can lead to false conclusions and potentially harmful decisions. The significance of data accuracy is underscored by @cite1, in their critical examination of big data's impact on decision-making.
+
+Legal and Ethical Compliance: The data must be used in compliance with laws like GDPR in Europe or other local data protection laws. Ethical use also involves considering the potential negative effects of data release on various communities and individuals, as highlighted by @cite6.
+
+Economic Impact: Revealing certain data about Airbnb's operations might negatively impact local real estate markets, rental prices, and the tourism industry. This economic influence is detailed in the research by @cite5.
+
+Social Consequences: The release of this data might lead to a backlash against Airbnb hosts or guests in certain communities, affecting social harmony.
+
+## 6. With reference to the data (*i.e.* using numbers, figures, maps, and descriptive statistics), what does an analysis of Hosts and Listing types suggest about the nature of Airbnb lets in London? 
+
+```{python}
+# Point data
+Airbnb2019 = [Point(xy) for xy in zip(
+    listings_2019['longitude'], listings_2019['latitude'])]
+Airbnb2020 = [Point(xy) for xy in zip(
+    listings_2020['longitude'], listings_2020['latitude'])]
+Airbnb2021 = [Point(xy) for xy in zip(
+    listings_2021['longitude'], listings_2021['latitude'])]
+```
+
+```{python}
+# Specify our data, coordinate reference system and geometry list we created
+geo_df_2019 = gpd.GeoDataFrame(listings_2019,  
+                               crs=London.crs,  
+                               geometry=Airbnb2019)  
+
+geo_df_2020 = gpd.GeoDataFrame(listings_2020,  
+                               crs=London.crs, 
+                               geometry=Airbnb2020)  
+
+geo_df_2021 = gpd.GeoDataFrame(listings_2021,  
+                               crs=London.crs,  
+                               geometry=Airbnb2021)  
+```
+
+### 1 Add Airbnb location to London Map
+Create a large graph with three horizontally aligned subgraphs, each showing the distribution of Airbnb listings in London in different years (2019, 2020, and 2021).
+
+```{python}
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+London.plot(ax=axes[0], color='whitesmoke', edgecolor='black')
+geo_df_2019.plot(ax=axes[0], color='black', marker='o', markersize=3)
+axes[0].set_title('Airbnb location of London in 2019', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0].set_xlabel('Longitude')
+axes[0].set_ylabel('Latitude')
+
+London.plot(ax=axes[1], color='whitesmoke', edgecolor='black')
+geo_df_2020.plot(ax=axes[1], color='black', marker='o', markersize=3)
+axes[1].set_title('Airbnb location of London in 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[1].set_xlabel('Longitude')
+axes[1].set_ylabel('Latitude')
+
+London.plot(ax=axes[2], color='whitesmoke', edgecolor='black')
+geo_df_2021.plot(ax=axes[2], color='black', marker='o', markersize=3)
+axes[2].set_title('Airbnb location of London in 2021', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[2].set_xlabel('Longitude')
+axes[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+This graph shows the distribution of Airbnb locations in London in 2019, 2020 and 2021.
+
+Density of Airbnb locations: In central areas, especially in the black part of the figure, the density of Airbnb is high, which usually indicates a high demand for travel or rentals in the area.
+
+2020 is likely to be affected by the COVID-19 pandemic, leading to changes in patterns of travel and accommodation. So we continue to study
+
+The number of airbin location had declined.
+
+### 2 Number of Airbnb location for each neighborhood
+* This code is used to create and display a map visualization of the number of Airbnb listings in different neighborhoods (or boroughs) of London for the years 2019, 2020, and 2021.
+* The code begins by using the value_counts() function on the 'neighbourhood_cleansed' column of the listings_2019, listings_2020, and listings_2021 dataframes. 
+* The results are stored in the Number2019, Number2020, and Number2021 dataframes.
+* These dataframes have two columns: 'Neighborhood' (neighborhood name) and 'Number of Airbnb Listings'.
+
+```{python}
+Number2019 = listings_2019['neighbourhood_cleansed'].value_counts(
+).reset_index()
+Number2019.columns = ['Neighborhood', 'Number of Airbnb Listings']
+
+Number2020 = listings_2020['neighbourhood_cleansed'].value_counts(
+).reset_index()
+Number2020.columns = ['Neighborhood', 'Number of Airbnb Listings']
+
+Number2021 = listings_2021['neighbourhood_cleansed'].value_counts(
+).reset_index()
+Number2021.columns = ['Neighborhood', 'Number of Airbnb Listings']
+
+# Merge GeoDataFrame with DataFrame 
+Airbnb2019 = pd.merge(London, Number2019, how='left',
+                      left_on='neighbourhood', right_on='Neighborhood')
+Airbnb2020 = pd.merge(London, Number2020, how='left',
+                      left_on='neighbourhood', right_on='Neighborhood')
+Airbnb2021 = pd.merge(London, Number2021, how='left',
+                      left_on='neighbourhood', right_on='Neighborhood')
+
+# Create a figure with three subplots in a horizontal layout
+fig, axs = plt.subplots(1, 3, figsize=(25, 8))
+
+# 2019
+Airbnb2019.plot(column='Number of Airbnb Listings', cmap='OrRd',
+                linewidth=0.8, ax=axs[0], edgecolor='0.8', legend=True)
+axs[0].set_title('Number of Airbnb in each borough of London in 2019',
+                 fontdict={'fontsize': '15', 'fontweight': '3'})
+axs[0].set_xlabel('Longitude')
+axs[0].set_ylabel('Latitude')
+
+# 2020
+Airbnb2020.plot(column='Number of Airbnb Listings', cmap='OrRd',
+                linewidth=0.8, ax=axs[1], edgecolor='0.8', legend=True)
+axs[1].set_title('Number of Airbnb in each borough of London in 2020',
+                 fontdict={'fontsize': '15', 'fontweight': '3'})
+axs[1].set_xlabel('Longitude')
+axs[1].set_ylabel('Latitude')
+
+# 2021
+Airbnb2021.plot(column='Number of Airbnb Listings', cmap='OrRd',
+                linewidth=0.8, ax=axs[2], edgecolor='0.8', legend=True)
+axs[2].set_title('Number of Airbnb in each borough of London in 2021',
+                 fontdict={'fontsize': '15', 'fontweight': '3'})
+axs[2].set_xlabel('Longitude')
+axs[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+This graph shows the number of AirbnBs in London boroughs in 2019, 2020 and 2021. This is a heat map made by combining geographic information with Airbnb listing data,
+using different colors to indicate the number of AirbnBs in each borough. The depth of the scale represents the concentration of AirbnBs, and the darker the color, 
+the more AirbnBs there are in the area.
+
+From 2019 to 2021, the number of AirbnBs in central London has decreased. This could be due to policy changes, increased market saturation, or the impact of COVID-19.
+
+Spatial distribution: The largest number of AirbnBs are concentrated in the central area and gradually decrease to the peripheral area.
+
+Time trend: Over the three years, the distribution trend of Airbnb has remained consistent, with the central area always being the densest place.
+
+### 3 Minimum nights from 2019-2021
+### Add Airbnb location--minimal nights to London Map
+
+Create and display maps of Airbnb property locations in London for the years 2019, 2020, and 2021, differentiating between short-term and long-term rental properties.
+
+According to the Airbin website, the difference between a long lease and a short lease is whether it is greater than 30 days, if it is greater than 30 days, it is a long lease, if it is less than 30 days, it is a short lease.
+
+Through this picture about three years, We can clearly see the distribution of airbin long and short rent in each borough of London.
+
+```{python}
+# Create a canvas with three horizontally arranged subplots
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Plot the 2019 map
+London.plot(ax=axes[0], color='whitesmoke', edgecolor='black')
+geo_df_2019[geo_df_2019['minimum_nights'] < 30].plot(ax=axes[0], 
+markersize=4, 
+color='black', 
+marker='o', 
+label='Short-term Rental')
+geo_df_2019[geo_df_2019['minimum_nights'] >= 30].plot(ax=axes[0], 
+markersize=4, 
+color='red', 
+marker='o', 
+label='Long-term Rental')
+axes[0].set_title('Airbnb location of London in 2019', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0].set_xlabel('Longitude')
+axes[0].set_ylabel('Latitude')
+
+# Plot the 2020 map
+London.plot(ax=axes[1], color='whitesmoke', edgecolor='black')
+geo_df_2020[geo_df_2020['minimum_nights'] < 30].plot(ax=axes[1], 
+markersize=4, 
+color='black', 
+marker='o', 
+label='Short-term Rental')
+geo_df_2020[geo_df_2020['minimum_nights'] >= 30].plot(ax=axes[1], 
+markersize=4, 
+color='red', 
+marker='o', 
+label='Long-term Rental')
+axes[1].set_title('Airbnb location of London in 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[1].set_xlabel('Longitude')
+axes[1].set_ylabel('Latitude')
+
+# Plot the 2021 map
+London.plot(ax=axes[2], color='whitesmoke', edgecolor='black')
+geo_df_2021[geo_df_2021['minimum_nights'] < 30].plot(ax=axes[2], 
+markersize=4, 
+color='black', 
+marker='o', 
+label='Short-term Rental')
+geo_df_2021[geo_df_2021['minimum_nights'] >= 30].plot(ax=axes[2], 
+markersize=4, 
+color='red', 
+marker='o', 
+label='Long-term Rental')
+axes[2].set_title('Airbnb location of London in 2021', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[2].set_xlabel('Longitude')
+axes[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+This chart shows the distribution of Airbnb locations in London for 2019, 2020 and 2021, while distinguishing between short-term rentals (minimum rental terms of less than 30 nights, 
+indicated by a black dot) and long-term rentals (minimum rental terms of 30 nights or more, indicated by a red dot).
+
+Concentration of short-term rentals: Over three years, short-term rentals (black dots) were highly concentrated in central London.
+
+Rarity of long-term rentals: Long-term rentals (red dots) are relatively rare in London and are concentrated in central areas.
+
+### 4 Number of Short-term and Long-term Rental Airbnb in each borough of London 2019-2021
+ Visualize the number of short-term and long-term rental Airbnb listings in different boroughs of London for the years 2019, 2020, and 2021. 
+
+```{python}
+ MiniNumber2019 = geo_df_2019.groupby(['neighbourhood_cleansed', 
+    pd.cut(geo_df_2019['minimum_nights'], 
+    bins=[-float('inf'), 
+    29, 
+    float('inf')], 
+    labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)            
+                                        
+MiniNumber2020 = geo_df_2020.groupby(['neighbourhood_cleansed', 
+    pd.cut(geo_df_2020['minimum_nights'], 
+    bins=[-float('inf'), 
+    29, 
+    float('inf')], 
+    labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+                                                        
+MiniNumber2021 = geo_df_2021.groupby(['neighbourhood_cleansed', 
+    pd.cut(geo_df_2021['minimum_nights'], 
+    bins=[-float('inf'), 
+    29, 
+    float('inf')], 
+    labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+                                                                        
+# Resetting index and renaming columns
+MiniNumber2019.reset_index(inplace=True)
+MiniNumber2019.columns = ['Neighbourhood',
+                          'Short-term Rental', 'Long-term Rental']
+
+MiniNumber2020.reset_index(inplace=True)
+MiniNumber2020.columns = ['Neighbourhood',
+                          'Short-term Rental', 'Long-term Rental']
+
+MiniNumber2021.reset_index(inplace=True)
+MiniNumber2021.columns = ['Neighbourhood',
+                          'Short-term Rental', 'Long-term Rental']
+
+# Merge GeoDataFrame with DataFrame
+MiniAirbnb2019 = pd.merge(London, MiniNumber2019, how='left',
+                          left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020 = pd.merge(London, MiniNumber2020, how='left',
+                          left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2021 = pd.merge(London, MiniNumber2021, how='left',
+                          left_on='neighbourhood', right_on='Neighbourhood')
+```
+
+### 4.1 Number for short-term from 2019-2021
+
+```{python}
+# Create a figure with three subplots arranged horizontally
+fig, axes = plt.subplots(1, 3, figsize=(26, 6))
+
+# 2019 Short-term Rental
+MiniAirbnb2019.plot(column='Short-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[0], edgecolor='0.8', legend=True)
+
+axes[0].set_title('Number of Short-term Rental Airbnb in each borough of London in 2019',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[0].set_xlabel('Longitude')
+axes[0].set_ylabel('Latitude')
+
+# 2020 Short-term Rental
+MiniAirbnb2020.plot(column='Short-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[1], edgecolor='0.8', legend=True)
+
+axes[1].set_title('Number of Short-term Rental Airbnb in each borough of London in 2020',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[1].set_xlabel('Longitude')
+axes[1].set_ylabel('Latitude')
+
+# 2021 Short-term Rental
+MiniAirbnb2021.plot(column='Short-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[2], edgecolor='0.8', legend=True)
+
+axes[2].set_title('Number of Short-term Rental Airbnb in each borough of London in 2021',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[2].set_xlabel('Longitude')
+axes[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+This picture shows that between 2019 and 2021, the number of Airbnb short-term listings in the central areas (the areas with the deepest color blocks) decreased significantly.
+In 2019, the central region had more than 400 listings, the highest concentration of listings.
+In 2020, the number of listings in the central area decreases, peaking at around 350.
+Through 2021, the number of listings in the central District continues to decrease, peaking below 175.
+Overall, the number of short-term Airbnb listings fell in most areas of London from 2019 to 2021
+
+### 4.2 Number for long-term from 2019-2021
+
+```{python}
+# Create a figure with three subplots arranged horizontally
+fig, axes = plt.subplots(1, 3, figsize=(26, 6))
+
+# 2019 Long-term Rental
+MiniAirbnb2019.plot(column='Long-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[0], edgecolor='0.8', legend=True)
+
+axes[0].set_title('Number of Long-term Rental Airbnb in each borough of London in 2019',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[0].set_xlabel('Longitude')
+axes[0].set_ylabel('Latitude')
+
+# 2020 Long-term Rental
+MiniAirbnb2020.plot(column='Long-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[1], edgecolor='0.8', legend=True)
+
+axes[1].set_title('Number of Long-term Rental Airbnb in each borough of London in 2020',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[1].set_xlabel('Longitude')
+axes[1].set_ylabel('Latitude')
+
+# 2021 Long-term Rental
+MiniAirbnb2021.plot(column='Long-term Rental', cmap='OrRd',
+                    linewidth=0.8, ax=axes[2], edgecolor='0.8', legend=True)
+
+axes[2].set_title('Number of Long-term Rental Airbnb in each borough of London in 2021',
+                  fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[2].set_xlabel('Longitude')
+axes[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+Central area concentration: Long-term rental Airbnb is mainly concentrated in central London and has remained so throughout the three years.
+
+Diminishing numbers: From 2019 to 2021, the number of long-term Airbnb rentals in central London has decreased. The maximum number in 2019 was more than 20, while by 2021 it was reduced to less than 15.
+
+Consistency of distribution: Although the number varied, the distribution pattern of long-term rental Airbnb remained consistent over the three years, concentrating in the central area and gradually decreasing to the periphery.
+
+### 5 Calculate the average price for each neighborhood from 2019-2021
+Calculates the average price of Airbnb listings in different neighborhoods for the years 2019, 2020, and 2021 using the groupby and mean functions.
+And merges these average price DataFrames with a GeoDataFrame called London based on the neighborhood information, creating new DataFrames named Neighborhood_price2019, Neighborhood_price2020, and Neighborhood_price2021.
+
+```{python}
+average_prices2019 = listings_2019.groupby('neighbourhood_cleansed')[
+    'price'].mean().reset_index()
+
+average_prices2020 = listings_2020.groupby('neighbourhood_cleansed')[
+    'price'].mean().reset_index()
+
+average_prices2021 = listings_2021.groupby('neighbourhood_cleansed')[
+    'price'].mean().reset_index()
+
+# Merge GeoDataFrame with DataFrame based on the 'neighborhood' and 'neighbor' columns
+Neighborhood_price2019 = pd.merge(
+    London, average_prices2019, how='left', 
+    left_on='neighbourhood', 
+    right_on='neighbourhood_cleansed')
+Neighborhood_price2020 = pd.merge(
+    London, average_prices2020, how='left', 
+    left_on='neighbourhood', 
+    right_on='neighbourhood_cleansed')
+Neighborhood_price2021 = pd.merge(
+    London, average_prices2021, how='left', 
+    left_on='neighbourhood', 
+    right_on='neighbourhood_cleansed')
+
+
+# Create a single figure with three subplots in one row
+fig, axes = plt.subplots(1, 3, figsize=(24, 8))
+
+# 2019
+Neighborhood_price2019.plot(
+    column='price', cmap='OrRd', linewidth=0.8, ax=axes[0], edgecolor='0.8', legend=True)
+axes[0].set_title('Average Price of Airbnb in each borough of London in 2019',
+                  fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0].set_xlabel('Longitude')
+axes[0].set_ylabel('Latitude')
+
+# 2020
+Neighborhood_price2020.plot(
+    column='price', cmap='OrRd', linewidth=0.8, ax=axes[1], edgecolor='0.8', legend=True)
+axes[1].set_title('Average Price of Airbnb in each borough of London in 2020',
+                  fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[1].set_xlabel('Longitude')
+axes[1].set_ylabel('Latitude')
+
+# 2021
+Neighborhood_price2021.plot(
+    column='price', cmap='OrRd', linewidth=0.8, ax=axes[2], edgecolor='0.8', legend=True)
+axes[2].set_title('Average Price of Airbnb in each borough of London in 2021',
+                  fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[2].set_xlabel('Longitude')
+axes[2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+In 2019, the average Airbnb price in some areas, such as the central District, was very high, reaching more than £200.
+By 2020, the average price in these high-value areas had fallen, with the highest price range around £180.
+In 2021, the high value area shrinks further and the price range drops further, with the maximum price not exceeding £500,
+but it is noted that the maximum range of the scale chart increases, indicating a greater difference in the price distribution.
+
+### 6 Total death in 2020
+
+```{python}
+# Set the file path 
+
+data_2020_feb_path = "https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_feb.csv"
+data_2020_apr_path = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_apr.csv'
+data_2020_june_path = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_june.csv'
+data_2020_aug_path = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_aug.csv'
+data_2020_oct_path = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_oct.csv'
+data_2020_dec_path = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv'
+```
+
+```{python}
+# Read data
+data_2020_feb = pd.read_csv(data_2020_feb_path)
+data_2020_apr = pd.read_csv(data_2020_apr_path)
+data_2020_june = pd.read_csv(data_2020_june_path)
+data_2020_aug = pd.read_csv(data_2020_aug_path)
+data_2020_oct = pd.read_csv(data_2020_oct_path)
+data_2020_dec = pd.read_csv(data_2020_dec_path)
+```
+
+### Covid-19 Death data in 2020
+
+```{python}
+#  Read the Excel data
+Death2020 = 'Data/Death2020.csv'
+Death2020_df = pd.read_csv(Death2020)
+
+Death2020_feb = Death2020_df[(Death2020_df['Week'] > 'Week 5') 
+& (Death2020_df['Week'] <= 'Week 9')].groupby('Geography')['death2020'].sum()
+
+Death2020_apr = Death2020_df[(Death2020_df['Week'] > 'Week 13') 
+& (Death2020_df['Week'] <= 'Week 18')].groupby('Geography')['death2020'].sum()
+
+Death2020_jun = Death2020_df[(Death2020_df['Week'] > 'Week 23') 
+& (Death2020_df['Week'] <= 'Week 26')].groupby('Geography')['death2020'].sum()
+
+Death2020_aug = Death2020_df[(Death2020_df['Week'] > 'Week 31') 
+& (Death2020_df['Week'] <= 'Week 35')].groupby('Geography')['death2020'].sum()
+
+Death2020_oct = Death2020_df[(Death2020_df['Week'] > 'Week 39') 
+& (Death2020_df['Week'] <= 'Week 44')].groupby('Geography')['death2020'].sum()
+
+Death2020_dec = Death2020_df[(Death2020_df['Week'] > 'Week 48') 
+& (Death2020_df['Week'] <= 'Week 53')].groupby('Geography')['death2020'].sum()
+```
+
+### Covid-19 Infection data in 2020
+
+```{python}
+Infection_2020_4 = 'Data/Infection4.csv'
+
+Infection_2020_6 = 'Data/Infection6.csv'
+
+Infection_2020_8 = 'Data/Infection8.csv'
+
+Infection_2020_10 = 'Data/Infection10.csv'
+
+Infection_2020_12 = 'Data/Infection12.csv'
+
+
+Infection_2020_apr = pd.read_csv(Infection_2020_4)
+
+Infection_2020_jun = pd.read_csv(Infection_2020_6)
+
+Infection_2020_aug = pd.read_csv(Infection_2020_8)
+
+Infection_2020_oct = pd.read_csv(Infection_2020_10)
+
+Infection_2020_dec = pd.read_csv(Infection_2020_12)
+```
+
+Firstly, combine the death population in 2020 to a dataframe 
+
+```{python}
+Death2020_feb_merge = pd.merge(London, Death2020_feb, how='left', 
+left_on='neighbourhood', right_on='Geography')
+
+Death2020_apr_merge = pd.merge(London, Death2020_apr, how='left', 
+left_on='neighbourhood', right_on='Geography')
+
+Death2020_jun_merge = pd.merge(London, Death2020_jun, how='left', 
+left_on='neighbourhood', right_on='Geography')
+
+Death2020_aug_merge = pd.merge(London, Death2020_aug, how='left', 
+left_on='neighbourhood', right_on='Geography')
+
+Death2020_oct_merge = pd.merge(London, Death2020_oct, how='left', 
+left_on='neighbourhood', right_on='Geography')
+
+Death2020_dec_merge = pd.merge(London, Death2020_dec, how='left', 
+left_on='neighbourhood', right_on='Geography')
+```
+
+Visualize Covid-19 deaths in different boroughs or areas of London in different months of 2020.
+
+```{python}
+# Create a figure with two rows and three columns of subplots
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+
+# 2020-2
+Death2020_feb_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[0, 0], 
+                          edgecolor='0.8', legend=True)
+axes[0, 0].set_title('Total death in Feb 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[0, 0].set_xlabel('Longitude')
+axes[0, 0].set_ylabel('Latitude')
+
+# 2020-4
+Death2020_apr_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[0, 1], 
+                          edgecolor='0.8', legend=True)
+axes[0, 1].set_title('Total death in Apr 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[0, 1].set_xlabel('Longitude')
+axes[0, 1].set_ylabel('Latitude')
+
+# 2020-6
+Death2020_jun_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[0, 2], 
+                          edgecolor='0.8', legend=True)
+axes[0, 2].set_title('Total death in Jun 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[0, 2].set_xlabel('Longitude')
+axes[0, 2].set_ylabel('Latitude')
+
+# 2020-8
+Death2020_aug_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[1, 0], 
+                          edgecolor='0.8', legend=True)
+axes[1, 0].set_title('Total death in Aug 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[1, 0].set_xlabel('Longitude')
+axes[1, 0].set_ylabel('Latitude')
+
+# 2020-10
+Death2020_oct_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[1, 1], 
+                          edgecolor='0.8', legend=True)
+axes[1, 1].set_title('Total death in Oct 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[1, 1].set_xlabel('Longitude')
+axes[1, 1].set_ylabel('Latitude')
+
+# 2020-12
+Death2020_dec_merge.plot(column='death2020', cmap='OrRd',
+                          linewidth=0.8, ax=axes[1, 2], 
+                          edgecolor='0.8', legend=True)
+axes[1, 2].set_title('Total death in Dec 2020', 
+fontdict={'fontsize': '14', 'fontweight': '3'})
+axes[1, 2].set_xlabel('Longitude')
+axes[1, 2].set_ylabel('Latitude')
+
+plt.tight_layout()
+
+plt.show()
+```
+
+In 2019, the average Airbnb price in some areas, such as the central District, was very high, reaching more than £200.
+By 2020, the average price in these high-value areas had fallen, with the highest price range around £180.
+In 2021, the high value area shrinks further and the price range drops further, with the maximum price not exceeding £500, but it is noted that the maximum range of the scale chart increases, indicating a greater difference in the price distribution. February and April: February 2020 saw a relatively low number of deaths in London, but by April there was a significant increase in deaths in certain areas, particularly the central and northern areas, showing a deep hue.
+
+June and August: In June, the number of deaths peaked in several regions, especially the central region. By August, however, the number of deaths dropped significantly and the overall tone lightened.
+
+October and December: The number of deaths increased in October, but not as high as in June. In December, the number of deaths increased again in several regions, but still not as high as in June.
+
+### 7 Short-term and Long-term Rental Airbnb location of London in 2020 monthly
+It first creates Point objects for Airbnb rental properties' longitude and latitude coordinates for each specific month.
+Then creates a GeoDataFrame (geo_df_2020_feb, geo_df_2020_apr, etc.) for each month's data.
+For each month, it plots a map of London using the London GeoDataFrame as the base map and overlays Airbnb rental properties.
+Short-term Rentals (minimum_nights < 30): Represented by black circles.
+Long-term Rentals (minimum_nights >= 30): Represented by red circles.
+
+```{python}
+Airbnb2020_feb = [Point(xy) for xy in zip(data_2020_feb['longitude'], 
+data_2020_feb['latitude'])]
+Airbnb2020_apr = [Point(xy) for xy in zip(data_2020_apr['longitude'], 
+data_2020_apr['latitude'])]
+Airbnb2020_jun = [Point(xy) for xy in zip(data_2020_june['longitude'], 
+data_2020_june['latitude'])]
+Airbnb2020_aug = [Point(xy) for xy in zip(data_2020_aug['longitude'], 
+data_2020_aug['latitude'])]
+Airbnb2020_oct = [Point(xy) for xy in zip(data_2020_oct['longitude'], 
+data_2020_oct['latitude'])]
+Airbnb2020_dec = [Point(xy) for xy in zip(data_2020_dec['longitude'], 
+data_2020_dec['latitude'])]
+
+
+geo_df_2020_feb = gpd.GeoDataFrame(data_2020_feb, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_feb) 
+                               #specify the geometry list we created
+
+geo_df_2020_apr = gpd.GeoDataFrame(data_2020_apr, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_apr) 
+                               #specify the geometry list we created
+
+geo_df_2020_jun = gpd.GeoDataFrame(data_2020_june, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_jun) 
+                               #specify the geometry list we created
+
+geo_df_2020_aug = gpd.GeoDataFrame(data_2020_aug, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_aug) 
+                               #specify the geometry list we created
+
+geo_df_2020_oct = gpd.GeoDataFrame(data_2020_oct, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_oct) 
+                               #specify the geometry list we created
+
+geo_df_2020_dec = gpd.GeoDataFrame(data_2020_dec, 
+                               #specify our data
+                               crs=London.crs, 
+                               #specify our coordinate reference system
+                               geometry= Airbnb2020_dec) 
+                               #specify the geometry list we created
+
+# Define your Airbnb data and GeoDataFrame creation here
+
+# Create a 2x3 grid for subplots
+fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(18, 12))
+fig.suptitle('Short-term and Long-term Rental Airbnb locations in London for different months in 2020', fontsize=20, fontweight='bold')
+
+# Loop through each month and plot on a subplot
+for i, (month_geo_df, month_name) in enumerate([(geo_df_2020_feb, 'February 2020'),
+                                                 (geo_df_2020_apr, 'April 2020'),
+                                                 (geo_df_2020_jun, 'June 2020'),
+                                                 (geo_df_2020_aug, 'August 2020'),
+                                                 (geo_df_2020_oct, 'October 2020'),
+                                                 (geo_df_2020_dec, 'December 2020')]):
+    row, col = divmod(i, 3)  # Determine the row and column for the subplot
+    ax = axes[row, col]  # Select the current subplot
+    
+    London.plot(ax=ax, color='whitesmoke', edgecolor='black')  # Plot the London map
+    
+    month_geo_df[month_geo_df['minimum_nights'] < 30].plot(ax=ax, 
+                                                          markersize=9, 
+                                                          color='black', 
+                                                          marker='o', 
+                                                          label='Short-term Rental')
+    month_geo_df[month_geo_df['minimum_nights'] >= 30].plot(ax=ax, 
+                                                           markersize=9, 
+                                                           color='red', 
+                                                           marker='o', 
+                                                           label='Long-term Rental')
+    
+    ax.set_title(f'{month_name}', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Longitude')
+    ax.set_ylabel('Latitude')
+    ax.legend(prop={'size': 10})
+
+plt.tight_layout(rect=[0, 0, 1, 0.95])
+
+plt.show()
+```
+
+In February, the number and distribution of short-term rentals are relatively high, especially in the downtown areas.
+By April, the number of short-term rentals decreased significantly, which may be related to the impact of the COVID-19 pandemic, as many countries began to implement travel restrictions and lockdowns at this point in time.
+The June and August charts show that the number of short-term rentals has recovered somewhat, but remains below February levels.
+By October and December, the distribution of short-term rentals was thinning again, likely due to the ongoing impact of the pandemic and seasonal changes in travel patterns.
+
+### 8 Number of Short-term and Long-term Rental Airbnb in each borough of London in 2020 monthly
+Rental data for different months are processed and combined to produce a dataset that includes geographic information and the number of short-term and long-term rentals
+
+```{python}
+Merge2020_feb = geo_df_2020_feb.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_feb['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+Merge2020_apr = geo_df_2020_apr.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_apr['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+Merge2020_jun = geo_df_2020_jun.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_jun['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+Merge2020_aug = geo_df_2020_aug.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_aug['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+Merge2020_oct = geo_df_2020_oct.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_oct['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+Merge2020_dec = geo_df_2020_dec.groupby(['neighbourhood_cleansed', 
+pd.cut(geo_df_2020_dec['minimum_nights'], 
+bins=[-float('inf'), 29, float('inf')], 
+labels=['minimum_nights<30', 'minimum_nights>=30'])]).size().unstack(fill_value=0)
+
+# Resetting index and renaming columns
+Merge2020_feb.reset_index(inplace=True)
+Merge2020_feb.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+Merge2020_apr.reset_index(inplace=True)
+Merge2020_apr.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+Merge2020_jun.reset_index(inplace=True)
+Merge2020_jun.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+Merge2020_aug.reset_index(inplace=True)
+Merge2020_aug.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+Merge2020_oct.reset_index(inplace=True)
+Merge2020_oct.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+Merge2020_dec.reset_index(inplace=True)
+Merge2020_dec.columns = ['Neighbourhood', 
+'Short-term Rental', 
+'Long-term Rental']
+
+
+# Merge GeoDataFrame with DataFrame based on the 'neighborhood' and 'neighbor' columns
+MiniAirbnb2020_feb = pd.merge(London, Merge2020_feb, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020_apr = pd.merge(London, Merge2020_apr, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020_jun = pd.merge(London, Merge2020_jun, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020_aug = pd.merge(London, Merge2020_aug, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020_oct = pd.merge(London, Merge2020_oct, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+MiniAirbnb2020_dec = pd.merge(London, Merge2020_dec, 
+how='left', left_on='neighbourhood', right_on='Neighbourhood')
+
+
+MiniAirbnb2020_feb['Short-term Rental'] = MiniAirbnb2020_feb['Short-term Rental'].fillna(0)
+MiniAirbnb2020_feb['Long-term Rental'] = MiniAirbnb2020_feb['Long-term Rental'].fillna(0)
+MiniAirbnb2020_apr['Short-term Rental'] = MiniAirbnb2020_apr['Short-term Rental'].fillna(0)
+MiniAirbnb2020_apr['Long-term Rental'] = MiniAirbnb2020_apr['Long-term Rental'].fillna(0)
+MiniAirbnb2020_jun['Short-term Rental'] = MiniAirbnb2020_jun['Short-term Rental'].fillna(0)
+MiniAirbnb2020_jun['Long-term Rental'] = MiniAirbnb2020_jun['Long-term Rental'].fillna(0)
+MiniAirbnb2020_aug['Short-term Rental'] = MiniAirbnb2020_aug['Short-term Rental'].fillna(0)
+MiniAirbnb2020_aug['Long-term Rental'] = MiniAirbnb2020_aug['Long-term Rental'].fillna(0)
+MiniAirbnb2020_oct['Short-term Rental'] = MiniAirbnb2020_oct['Short-term Rental'].fillna(0)
+MiniAirbnb2020_oct['Long-term Rental'] = MiniAirbnb2020_oct['Long-term Rental'].fillna(0)
+MiniAirbnb2020_dec['Short-term Rental'] = MiniAirbnb2020_dec['Short-term Rental'].fillna(0)
+MiniAirbnb2020_dec['Long-term Rental'] = MiniAirbnb2020_dec['Long-term Rental'].fillna(0)
+```
+
+### Visualize short-term rental data for different months
+
+```{python}
+# Create a 2x3 subplot layout
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+plt.subplots_adjust(wspace=0.2, hspace=0.3)  # Adjust the space between subplots
+
+# Plot for February 2020
+MiniAirbnb2020_feb.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 0], edgecolor='0.8', legend=True)
+axes[0, 0].set_title('Feb 2020 - Short-term Rental', fontsize=12)
+
+# Plot for April 2020
+MiniAirbnb2020_apr.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 1], edgecolor='0.8', legend=True)
+axes[0, 1].set_title('Apr 2020 - Short-term Rental', fontsize=12)
+
+# Plot for June 2020
+MiniAirbnb2020_jun.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 2], edgecolor='0.8', legend=True)
+axes[0, 2].set_title('Jun 2020 - Short-term Rental', fontsize=12)
+
+# Plot for August 2020
+MiniAirbnb2020_aug.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 0], edgecolor='0.8', legend=True)
+axes[1, 0].set_title('Aug 2020 - Short-term Rental', fontsize=12)
+
+# Plot for October 2020
+MiniAirbnb2020_oct.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 1], edgecolor='0.8', legend=True)
+axes[1, 1].set_title('Oct 2020 - Short-term Rental', fontsize=12)
+
+# Plot for December 2020
+MiniAirbnb2020_dec.plot(column='Short-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 2], edgecolor='0.8', legend=True)
+axes[1, 2].set_title('Dec 2020 - Short-term Rental', fontsize=12)
+
+# Set common xlabel and ylabel for all subplots
+for ax in axes.flat:
+    ax.set_xlabel('Longitude', fontsize=10)
+    ax.set_ylabel('Latitude', fontsize=10)
+
+# Display the plots
+plt.show()
+```
+
+February: The number of short-term rental AirbnBs is higher and darker in certain central areas, especially the central areas.
+April and June: As we move into April and June, the number of AirbnBs in the central area decreases significantly and the overall map becomes lighter in tone, especially in June.
+August and October: By August and October, the number of AirbnBs in the central area had picked up, but not to the number seen in February.
+December: The number of AirbnBs in the central region decreased further in December, showing a decreasing trend.
+
+### Visualize long-term rental data for different months
+
+```{python}
+# Create a 2x3 subplot layout for long-term rentals
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+plt.subplots_adjust(wspace=0.2, hspace=0.3)  # Adjust the space between subplots
+
+# Plot for February 2020
+MiniAirbnb2020_feb.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 0], edgecolor='0.8', legend=True)
+axes[0, 0].set_title('Feb 2020 - Long-term Rental', fontsize=12)
+
+# Plot for April 2020
+MiniAirbnb2020_apr.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 1], edgecolor='0.8', legend=True)
+axes[0, 1].set_title('Apr 2020 - Long-term Rental', fontsize=12)
+
+# Plot for June 2020
+MiniAirbnb2020_jun.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[0, 2], edgecolor='0.8', legend=True)
+axes[0, 2].set_title('Jun 2020 - Long-term Rental', fontsize=12)
+
+# Plot for August 2020
+MiniAirbnb2020_aug.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 0], edgecolor='0.8', legend=True)
+axes[1, 0].set_title('Aug 2020 - Long-term Rental', fontsize=12)
+
+# Plot for October 2020
+MiniAirbnb2020_oct.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 1], edgecolor='0.8', legend=True)
+axes[1, 1].set_title('Oct 2020 - Long-term Rental', fontsize=12)
+
+# Plot for December 2020
+MiniAirbnb2020_dec.plot(column='Long-term Rental', cmap='OrRd', linewidth=0.8, ax=axes[1, 2], edgecolor='0.8', legend=True)
+axes[1, 2].set_title('Dec 2020 - Long-term Rental', fontsize=12)
+
+# Set common xlabel and ylabel for all subplots
+for ax in axes.flat:
+    ax.set_xlabel('Longitude', fontsize=10)
+    ax.set_ylabel('Latitude', fontsize=10)
+
+# Display the plots
+plt.show()
+```
+
+In February and April, certain central areas had a higher number of long-term rental AirbnBs, showing a darker hue.
+By June, the number of these areas decreases and the overall map becomes lighter in tone.
+In August, the number of central areas picked up somewhat, but remained below the levels of February and April.
+In October and December, the number of long-term rental AirbnBs increased in some areas, but the overall number remained low.
+
+### 9 Infection in 2020
+Combining data on COVID-19 infections in different communities in London with London map data, 
+Geospatial Visualization was then used to show the distribution of COVID-19 infections across London neighborhoods at different time points (April, June, August, October and December 2020).
+
+```{python}
+Infection2020_apr_merge = pd.merge(London, 
+Infection_2020_apr, 
+how='left', left_on='neighbourhood', right_on='area')
+
+Infection2020_jun_merge = pd.merge(London, 
+Infection_2020_jun, 
+how='left', left_on='neighbourhood', right_on='area')
+
+Infection2020_aug_merge = pd.merge(London, 
+Infection_2020_aug, 
+how='left', left_on='neighbourhood', right_on='area')
+
+Infection2020_oct_merge = pd.merge(London, 
+Infection_2020_oct, 
+how='left', left_on='neighbourhood', right_on='area')
+
+Infection2020_dec_merge = pd.merge(London, 
+Infection_2020_dec, 
+how='left', left_on='neighbourhood', right_on='area')
+
+import matplotlib.pyplot as plt
+
+# Create a 2x3 grid of subplots
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+
+# Plot April 2020
+Infection2020_apr_merge.plot(column='infection', 
+cmap='OrRd', 
+linewidth=0.8, 
+ax=axes[0, 0], 
+edgecolor='0.8', 
+legend=True)
+axes[0, 0].set_title('Infection in April 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0, 0].set_xlabel('Longitude')
+axes[0, 0].set_ylabel('Latitude')
+
+# Plot June 2020
+Infection2020_jun_merge.plot(column='infection', 
+cmap='OrRd', 
+linewidth=0.8, 
+ax=axes[0, 1], 
+edgecolor='0.8', 
+legend=True)
+axes[0, 1].set_title('Infection in June 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0, 1].set_xlabel('Longitude')
+axes[0, 1].set_ylabel('Latitude')
+
+# Plot August 2020
+Infection2020_aug_merge.plot(column='infection', 
+cmap='OrRd', 
+linewidth=0.8, 
+ax=axes[0, 2], 
+edgecolor='0.8', 
+legend=True)
+axes[0, 2].set_title('Infection in August 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[0, 2].set_xlabel('Longitude')
+axes[0, 2].set_ylabel('Latitude')
+
+# Plot October 2020
+Infection2020_oct_merge.plot(column='infection', 
+cmap='OrRd', 
+linewidth=0.8, 
+ax=axes[1, 0], 
+edgecolor='0.8', 
+legend=True)
+axes[1, 0].set_title('Infection in October 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[1, 0].set_xlabel('Longitude')
+axes[1, 0].set_ylabel('Latitude')
+
+# Plot December 2020
+Infection2020_dec_merge.plot(column='infection', 
+cmap='OrRd', 
+linewidth=0.8, 
+ax=axes[1, 1], 
+edgecolor='0.8', 
+legend=True)
+axes[1, 1].set_title('Infection in December 2020', 
+fontdict={'fontsize': '15', 'fontweight': '3'})
+axes[1, 1].set_xlabel('Longitude')
+axes[1, 1].set_ylabel('Latitude')
+
+# Remove the empty subplot
+fig.delaxes(axes[1, 2])
+
+plt.tight_layout()
+
+plt.show()
+```
+
+April - The infection is on the order of 200 to 800, with the most severe infection in the central area.
+June - There has been a decrease in infections, with most areas in the order of 100 to 600 infections.
+August - Further reduction in infections, with most regions in the order of 50 to 175, with a marked decline in the number of infections in the central region.
+October - The number of infections has rebounded, returning to between 1,500 and 2,500 infections in several regions.
+December - The number of infections rose sharply, with almost all regions experiencing infections of an order of magnitude between 2,000 and 8,000, showing a significant increase in infections.
+
+## 7. Drawing on your previous answers, and supporting your response with evidence (e.g. figures, maps, and statistical analysis/models), how *could* this data set be used to inform the regulation of Short-Term Lets (STL) in London? 
+
+### 10 Correlation Matrix
+Pull together different sets of Data, including Airbnb data, Death Data, and infection data.
+The absence of infection data from the February data was addressed and the infection data was merged into the combined results of the Airbnb data and the death data
+Perform correlation analysis. For each month's data, it calculates correlations between Long-term Rental (long-term Rental), Short-term Rental (short-term rental), death2020 (death data), 
+and infection (infection data), and visualizes the correlation matrix using heat maps. The title of each correlation matrix contains the corresponding month.
+
+```{python}
+MiniAirbnb2020_feb_death = pd.merge(MiniAirbnb2020_feb, Death2020_feb, how='left', left_on='neighbourhood', right_on='Geography')
+MiniAirbnb2020_apr_death = pd.merge(MiniAirbnb2020_apr, Death2020_apr, how='left', left_on='neighbourhood', right_on='Geography')
+MiniAirbnb2020_jun_death = pd.merge(MiniAirbnb2020_jun, Death2020_jun, how='left', left_on='neighbourhood', right_on='Geography')
+MiniAirbnb2020_aug_death = pd.merge(MiniAirbnb2020_aug, Death2020_aug, how='left', left_on='neighbourhood', right_on='Geography')
+MiniAirbnb2020_oct_death = pd.merge(MiniAirbnb2020_oct, Death2020_oct, how='left', left_on='neighbourhood', right_on='Geography')
+MiniAirbnb2020_dec_death = pd.merge(MiniAirbnb2020_dec, Death2020_dec, how='left', left_on='neighbourhood', right_on='Geography')
+
+
+##Feburary infection data missing
+MiniAirbnb2020_apr_death_infection = pd.merge(MiniAirbnb2020_apr_death, Infection_2020_apr, how='left', left_on='neighbourhood', right_on='area')
+MiniAirbnb2020_jun_death_infection = pd.merge(MiniAirbnb2020_jun_death, Infection_2020_jun, how='left', left_on='neighbourhood', right_on='area')
+MiniAirbnb2020_aug_death_infection = pd.merge(MiniAirbnb2020_aug_death, Infection_2020_aug, how='left', left_on='neighbourhood', right_on='area')
+MiniAirbnb2020_oct_death_infection = pd.merge(MiniAirbnb2020_oct_death, Infection_2020_oct, how='left', left_on='neighbourhood', right_on='area')
+MiniAirbnb2020_dec_death_infection = pd.merge(MiniAirbnb2020_dec_death, Infection_2020_dec, how='left', left_on='neighbourhood', right_on='area')
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create subplots with a 2x3 grid
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+
+# Merge dataframes and compute correlation matrices for each month
+dataframes = [
+    MiniAirbnb2020_apr_death_infection,
+    MiniAirbnb2020_jun_death_infection,
+    MiniAirbnb2020_aug_death_infection,
+    MiniAirbnb2020_oct_death_infection,
+    MiniAirbnb2020_dec_death_infection
+]
+month_labels = ['April 2020', 'June 2020', 'August 2020', 'October 2020', 'December 2020']
+
+# Iterate through dataframes and month labels to plot each subplot
+for i, (df, month_label) in enumerate(zip(dataframes, month_labels)):
+    if i < 5:  # Only create subplots for the first five dataframes
+        row, col = divmod(i, 3)  # Calculate the row and column indices
+        ax = axes[row, col]  # Select the appropriate subplot
+        
+        correlation_matrix = df[['Long-term Rental', 'Short-term Rental', 'death2020', 'infection']].corr()
+        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5, ax=ax)
+        
+        ax.set_title(f'Correlation Matrix in {month_label}', fontdict={'fontsize': '15', 'fontweight': '3'})
+
+plt.tight_layout()
+
+plt.show()
+```
+
+April - The infection is on the order of 200 to 800, with the most severe infection in the central area.
+June - There has been a decrease in infections, with most areas in the order of 100 to 600 infections.
+August - Further reduction in infections, with most regions in the order of 50 to 175, with a marked decline in the number of infections in the central region.
+October - The number of infections has rebounded, returning to between 1,500 and 2,500 infections in several regions.
+December - The number of infections rose sharply, with almost all regions experiencing infections of an order of magnitude between 2,000 and 8,000, showing a significant increase in infections. Relevance of the rental market:
+
+Long-term and short-term rentals remained positively correlated throughout the time period, reaching the highest in October (0.52). This means that these two types of rental markets may be affected by the same market forces, or their performance in the market may be correlated.
+Relationship between rental market and mortality:
+
+The correlation between long - and short-term rentals and deaths in 2020 showed different patterns over different months, but for the most part, these values were negative or close to zero, suggesting that there is no strong direct relationship between the rental market and mortality.
+The relationship between rental market and the number of infections:
+
+The correlation between long-term rentals and the number of infections varied little from month to month, sometimes positive (0.14 in August and 0.06 in October) and sometimes negative (-0.15 in April and -0.15 in June), which may indicate that there is not a consistent trend or relationship.
+Short-term rentals showed a strong negative correlation (-0.32) with the number of infections in June, but little correlation in other months.
+Relation between deaths and infections:
+
+There was a strong positive correlation between deaths and infections in April and June (0.84 and 0.74, respectively), but this correlation dropped to 0.76 in December. Despite the decrease, it still indicates that the increase in the number of infections is in sync with the increase in the number of deaths.
+Time trend:
+
+In April and June, the correlations between long-term and short-term rentals and the number of infections were negative or close to zero, while by August, these correlations turned positive, possibly reflecting a possible change in the market's response to the outbreak over time.
+
+### 11 Mutlivariable Joint distribution
+Create a series of scatter plots and Kernel Density Estimates (KDE) to study the relationships and distributions between different variables.
+
+```{python}
+sns.set(font_scale=1.2)
+sns.pairplot(MiniAirbnb2020_dec_death_infection[['Long-term Rental', 'Short-term Rental', 'death2020','infection']],kind='reg',diag_kind='kde')
+
+sns.set(font_scale=1.2)
+sns.pairplot(MiniAirbnb2020_oct_death_infection[['Long-term Rental', 'Short-term Rental', 'death2020','infection']],kind='reg',diag_kind='kde')
+
+sns.set(font_scale=1.2)
+sns.pairplot(MiniAirbnb2020_aug_death_infection[['Long-term Rental', 'Short-term Rental', 'death2020','infection']],kind='reg',diag_kind='kde')
+
+sns.set(font_scale=1.2)
+sns.pairplot(MiniAirbnb2020_jun_death_infection[['Long-term Rental', 'Short-term Rental', 'death2020','infection']],kind='reg',diag_kind='kde')
+
+sns.set(font_scale=1.2)
+sns.pairplot(MiniAirbnb2020_apr_death_infection[['Long-term Rental', 'Short-term Rental', 'death2020','infection']],kind='reg',diag_kind='kde')
+
+plt.show()
+```
+
+Relationship between long-term and short-term leases: The scatter plot shows that there is no obvious linear relationship between long-term and short-term leases, which means that the two leasing patterns may be relatively independent.
+
+Relationship between long-term leases and deaths and infections: The number of long-term leases does not appear to have a clear linear relationship with the number of deaths and infections. This suggests that the number of long-term leases may not be the main factor influencing the number of COVID-19 deaths and infections.
+
+Relationship between short-term rentals and deaths and infections: The chart shows that there is also no clear linear relationship between the number of short-term rentals and the number of deaths and infections, although the regression line shows a slight positive or negative trend, the distribution of data points suggests that the relationship is not strong.
+
+Relationship between deaths and infections: It is expected that there is a positive correlation between the number of deaths and the number of infections, and the scatter plot and regression line show that as the number of infections increases, so does the number of deaths.
+
+## References
+Boyd, D., & Crawford, K. (2012). Critical Questions for Big Data. Information, Communication & Society, 15(5), 662-679.
+
+Edelman, B. G., & Geradin, D. (2016). Efficiencies and Regulatory Shortcuts: How Should We Regulate Companies like Airbnb and Uber? Stanford Technology Law Review, 19, 293-328.
+
+Ert, E., Fleischer, A., & Magen, N. (2016). Trust and Reputation in the Sharing Economy: The Role of Personal Photos in Airbnb. Tourism Management, 55, 62-73.
+
+Ferreri, M., & Sanyal, R. (2018). Platform Economies and Urban Planning: Airbnb and Regulated Deregulation in London. Urban Studies, 55(15), 3353-3368.
+
+Guttentag, D. (2015). Airbnb: Disruptive Innovation and the Rise of an Informal Tourism Accommodation Sector. Current Issues in Tourism, 18(12), 1192-1217.
+
+Newell, S., & Marabelli, M. (2015). Strategic Opportunities (and Challenges) of Algorithmic Decision-Making: A Call for Action on the Long-Term Societal Effects of ‘Datification’. The Journal of Strategic Information Systems, 24(1), 3-14.
+
+
+Zook, M., Barocas, S., Boyd, D., Crawford, K., Keller, E., Gangadharan, S. P., Goodman, A., Hollander, R., Koenig, B. A., Metcalf, J., Narayanan, A., Nelson, A., & Pasquale, F. (2017). Ten Simple Rules for Responsible Big Data Research. PLOS Computational Biology, 13(3), e1005399.
