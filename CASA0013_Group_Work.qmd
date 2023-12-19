@@ -1247,17 +1247,4 @@ Relationship between short-term rentals and deaths and infections: The chart sho
 Relationship between deaths and infections: It is expected that there is a positive correlation between the number of deaths and the number of infections, and the scatter plot and regression line show that as the number of infections increases, so does the number of deaths.
 
 ## References
-Boyd, D., & Crawford, K. (2012). Critical Questions for Big Data. Information, Communication & Society, 15(5), 662-679.
 
-Edelman, B. G., & Geradin, D. (2016). Efficiencies and Regulatory Shortcuts: How Should We Regulate Companies like Airbnb and Uber? Stanford Technology Law Review, 19, 293-328.
-
-Ert, E., Fleischer, A., & Magen, N. (2016). Trust and Reputation in the Sharing Economy: The Role of Personal Photos in Airbnb. Tourism Management, 55, 62-73.
-
-Ferreri, M., & Sanyal, R. (2018). Platform Economies and Urban Planning: Airbnb and Regulated Deregulation in London. Urban Studies, 55(15), 3353-3368.
-
-Guttentag, D. (2015). Airbnb: Disruptive Innovation and the Rise of an Informal Tourism Accommodation Sector. Current Issues in Tourism, 18(12), 1192-1217.
-
-Newell, S., & Marabelli, M. (2015). Strategic Opportunities (and Challenges) of Algorithmic Decision-Making: A Call for Action on the Long-Term Societal Effects of ‘Datification’. The Journal of Strategic Information Systems, 24(1), 3-14.
-
-
-Zook, M., Barocas, S., Boyd, D., Crawford, K., Keller, E., Gangadharan, S. P., Goodman, A., Hollander, R., Koenig, B. A., Metcalf, J., Narayanan, A., Nelson, A., & Pasquale, F. (2017). Ten Simple Rules for Responsible Big Data Research. PLOS Computational Biology, 13(3), e1005399.
