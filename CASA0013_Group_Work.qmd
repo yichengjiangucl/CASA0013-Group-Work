@@ -623,15 +623,15 @@ Death2020_dec = Death2020_df[(Death2020_df['Week'] > 'Week 48')
 ### Covid-19 Infection data in 2020
 
 ```{python}
-Infection_2020_4 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv/Infection4.csv'
+Infection_2020_4 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection4.csv'
 
-Infection_2020_6 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv/Infection6.csv'
+Infection_2020_6 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection6.csv'
 
-Infection_2020_8 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv/Infection8.csv'
+Infection_2020_8 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection8.csv'
 
-Infection_2020_10 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv/Infection10.csv'
+Infection_2020_10 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection10.csv'
 
-Infection_2020_12 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/data_2020_dec.csv/Infection12.csv'
+Infection_2020_12 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection12.csv'
 
 
 Infection_2020_apr = pd.read_csv(Infection_2020_4)
