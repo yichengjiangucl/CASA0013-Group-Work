@@ -115,15 +115,10 @@ listings_2021 = pd.read_csv(listings_2021_path)
 The data was collected by Wentao Lei from Airbnb(http://insideairbnb.com/) and ONS website.
 
 ## 2. Why did they collect it?
-The data was collected for a study titled 'Opportunities and Risks arising from Covid-19,' aimed at understanding how Covid-19 has affected London's rental market. To do this, it's important to look at Covid-19 case and death numbers because they show how the pandemic has impacted people's decisions on renting. We're checking how Airbnb listings have changed over time and if these changes are linked to the pandemic's spread. We also want to see if apartments leaving Airbnb are being rented out long-term instead. Including health data helps explain why the rental market moves in certain ways during the pandemic.
-The research also involves examining the entry to and exit from the Airbnb marketplace by comparing snapshots of London's rental data at different time points. The goal is to assess how the pandemic has influenced these markets and to make inferences about the movement of properties between Airbnb and the long-term rental sector. This requires making reasonable assumptions, such as whether all flats withdrawn from Airbnb are re-entered into the long-term rental market, and these assumptions need to be documented and justified within the study.
+The data was collected for a study titled 'Opportunities and Risks arising from Covid-19,' aimed at understanding how Covid-19 has affected London's rental market, particularly in relation to Airbnb listings and the long-term rental sector. The research involved analyzing Covid-19 case and death numbers to assess their impact on people's decisions regarding renting. Additionally, the study examined the entry to and exit from the Airbnb marketplace by comparing snapshots of London's rental data at different time points.
 
 ## 3. How was the data collected?  
-Although the exact methods of data collection are not specified in the information provided, it is inferred that Airbnb data may have been harvested from public listings on the Airbnb platform or through an API made available by Airbnb (http://insideairbnb.com/). For the COVID-19 infection and death data, the likely source is the Office for National Statistics' (ONS) website. These datasets have undergone a rigorous data cleaning process, an essential step to ensure accuracy and reliability. The data cleaning involved removing duplicates, handling missing values, correcting inconsistencies, and filtering irrelevant information to hone in on pertinent data points. Moreover, to enable a more granular analysis, the Airbnb dataset was further refined by selecting listings from February, April, June, August, October, and December of 2020 as a detailed time-scale for subsequent examination.
-
-The data analysis techniques are illustrated in the `Covid-19.py` script, which include reading CSV files for structured data storage, merging datasets to correlate diverse sources of information, employing geospatial data, and generating visualizations for an enhanced interpretive experience.
-
-Python, a staple in data science, is utilized for these tasks, with libraries such as Pandas for data manipulation and analysis; Matplotlib and Seaborn for visualization; and GeoPandas for geospatial data handling; Functions like `pd.read_csv()` read data from CSV files, `gpd.read_file()` is used for geospatial data, and the `plot` method creates maps and other graphical data representations. 
+The data collection likely involved obtaining Airbnb data from public listings or through Airbnb's API, and Covid-19 infection and death data from the Office for National Statistics' (ONS) website. Rigorous data cleaning was performed to ensure accuracy, including removing duplicates, handling missing values, and filtering irrelevant information. Python and various libraries like Pandas, Matplotlib, Seaborn, and GeoPandas were used for data manipulation, analysis, geospatial data handling, and visualization, as illustrated in the 'Covid-19.py' script.
 
 ## London Map
 
@@ -141,20 +136,14 @@ plt.show()
 
                                      (figure 1)
 
-After cleaning, the data could be structured for analysis, statistical tests were performed, and the findings were visualized through graphs and maps to reveal the geographical distribution and trends of COVID-19's impact on rental markets.
-
 ## 4. How does the method of collection impact the completeness and/or accuracy of its representation of the process it seeks to study, and what wider issues does this raise?
 
-Using "last comment data" to estimate the rental date is an approximation. This may introduce inaccuracies as the rental date may not exactly match the date of the last review. The exact date of the rental may be earlier or later than the last review date, meaning the findings may not accurately reflect the actual rental market.
+Using "last comment data" to estimate rental dates is an approximation that can introduce inaccuracies.  In long-term rentals, where leases extend over more extended periods, inaccuracies in rental dates could have a more significant impact, potentially affecting the study's completeness and accuracy. In contrast, in short-term rentals with shorter durations, the error may be relatively minor and have less impact.
 
-This error may affect the long-term rental market differently than the short-term rental market. In long-term rental markets, where rentals last for longer periods of time, errors in rental dates may be more significant, affecting the completeness and accuracy of the study. In the short-term rental market, the rental duration is shorter, so this error may be relatively small and will not have a big impact on the study.
-
-Taken together, conclusions based on approximate data may not apply to all rental situations. For example, errors may be more significant in certain areas or specific rental types, so caution is needed when generalizing findings. The accuracy of research is limited by data collection methods, and policymakers and market participants need to be aware of these limitations so that they can be considered when making decisions.
+In summary, conclusions based on approximate data may not apply universally, and errors might be more pronounced in specific areas or rental types. Recognizing the limitations of data collection methods is crucial for policymakers and market participants to make informed decisions.
 
 ## 5. What ethical considerations does the use of this data raise? 
-* Privacy and Data Protection: The use of personal data, such as names, locations, and other identifying information, raises significant privacy concerns. Ensuring that the data is anonymized and does not violate individuals' privacy is crucial. This is in line with the principles discussed in @cite7, who emphasize the importance of anonymization in big data.
-
-* Impact on Stakeholders: Releasing detailed Airbnb data can have various impacts:
+* Privacy and Data Protection: The use of personal data raises significant privacy concerns. Ensuring that the data is anonymized and does not violate individuals' privacy is crucial. This is in line with the principles discussed in @cite7.
 
 * Hosts (Merchants): They might face privacy breaches or unwanted exposure. Additionally, competitors or local authorities could use this data against them, as indicated by @cite3 in their study on the competitive dynamics in the hospitality industry.
 
@@ -162,13 +151,11 @@ Taken together, conclusions based on approximate data may not apply to all renta
 
 * Government/Authorities: The data might reveal regulatory non-compliances or tax evasion, leading to legal actions or policy changes, as discussed by @cite2 in the context of digital markets regulation.
 
-* Accuracy and Misinterpretation: Ensuring the data's accuracy is vital, as incorrect data can lead to false conclusions and potentially harmful decisions. The significance of data accuracy is underscored by @cite1, in their critical examination of big data's impact on decision-making.
+* Accuracy and Misinterpretation: Incorrect data can lead to false conclusions and potentially harmful decisions. The significance of data accuracy is underscored by @cite1, in their critical examination of big data's impact on decision-making.
 
-* Legal and Ethical Compliance: The data must be used in compliance with laws like GDPR in Europe or other local data protection laws. Ethical use also involves considering the potential negative effects of data release on various communities and individuals, as highlighted by @cite6.
+* Legal and Ethical Compliance: The data must be used in compliance with laws. Ethical use also involves considering the potential negative effects of data release on various communities and individuals, as highlighted by @cite6.
 
-* Economic Impact: Revealing certain data about Airbnb's operations might negatively impact local real estate markets, rental prices, and the tourism industry. This economic influence is detailed in the research by @cite5.
-
-* Social Consequences: The release of this data might lead to a backlash against Airbnb hosts or guests in certain communities, affecting social harmony.
+* Economic Impact: Revealing certain data about Airbnb's operations might negatively impact local real estate markets, rental prices, and the tourism industry, according to the research by @cite5.
 
 ## 6. With reference to the data (*i.e.* using numbers, figures, maps, and descriptive statistics), what does an analysis of Hosts and Listing types suggest about the nature of Airbnb lets in London? 
 
@@ -198,7 +185,7 @@ geo_df_2021 = gpd.GeoDataFrame(listings_2021,
 ```
 
 ### 1 Add Airbnb location to London Map
-Create a large graph with three horizontally aligned subgraphs, each showing the distribution of Airbnb listings in London in different years (2019, 2020, and 2021).
+Distribution of Airbnb listings in London in different years (2019, 2020, and 2021).
 
 ```{python}
 fig, axes = plt.subplots(1, 3, figsize=(18, 6))
@@ -231,22 +218,9 @@ plt.show()
 
                                     (figure 2)
 
-This graph shows the distribution of Airbnb locations in London in 2019, 2020 and 2021.
-
-Density of Airbnb locations: In central areas, especially in the black part of the figure, the density of Airbnb is high, which usually indicates a high demand for travel or rentals in the area.
-
-2020 is likely to be affected by the COVID-19 pandemic, leading to changes in patterns of travel and accommodation. So we continue to study.
-
 Concentration in Central London: The concentration of Airbnb listings in Central London is a consistent trend across multiple data visualizations, indicating a high density of short-term rentals in areas that are tourist hotspots, business hubs, and well-serviced by public transportation.   This concentration is indicative of Airbnb's role in catering to visitors who prioritize ease of access to London's main attractions.
 
 ### 2 Number of Airbnb location for each neighborhood
-* This code is used to create and display a map visualization of the number of Airbnb listings in different neighborhoods (or boroughs) of London for the years 2019, 2020, and 2021.
-
-* The code begins by using the value_counts() function on the 'neighbourhood_cleansed' column of the listings_2019, listings_2020, and listings_2021 dataframes. 
-
-* The results are stored in the Number2019, Number2020, and Number2021 dataframes.
-
-* These dataframes have two columns: 'Neighborhood' (neighborhood name) and 'Number of Airbnb Listings'.
 
 ```{python}
 Number2019 = listings_2019['neighbourhood_cleansed'].value_counts(
@@ -303,9 +277,7 @@ plt.show()
                                     
                                     (figure 3)
 
-* This graph shows the number of Airbnbs in London boroughs in 2019, 2020 and 2021. This is a heat map made by combining geographic information with Airbnb listing data, using different colors to indicate the number of AirbnBs in each borough. The depth of the scale represents the concentration of AirbnBs, and the darker the color, the more AirbnBs there are in the area.
-
-* From 2019 to 2021, the number of AirbnBs in central London has decreased. This could be due to policy changes, increased market saturation, or the impact of COVID-19.
+* This graph shows the number of Airbnbs in London boroughs in 2019, 2020 and 2021. 
 
 * Spatial distribution: The largest number of AirbnBs are concentrated in the central area and gradually decrease to the peripheral area.
 
@@ -314,11 +286,7 @@ plt.show()
 ### 3 Minimum nights from 2019-2021
 ### Add Airbnb location--minimal nights to London Map
 
-Create and display maps of Airbnb property locations in London for the years 2019, 2020, and 2021, differentiating between short-term and long-term rental properties.
-
-According to the Airbin website, the difference between a long lease and a short lease is whether it is greater than 30 days, if it is greater than 30 days, it is a long lease, if it is less than 30 days, it is a short lease.
-
-Through this picture about three years, We can clearly see the distribution of airbin long and short rent in each borough of London.
+ According to Airbnb's website, it's a long-term lease if it's more than 30 days, and a short-term lease if it's less than 30 days.
 
 ```{python}
 # Create a canvas with three horizontally arranged subplots
@@ -381,14 +349,11 @@ plt.show()
 ```
                                     (figure 4)
 
-* This chart shows the distribution of Airbnb locations in London for 2019, 2020 and 2021, while distinguishing between short-term rentals (minimum rental terms of less than 30 nights, indicated by a black dot) and long-term rentals (minimum rental terms of 30 nights or more, indicated by a red dot).
-
 * Concentration of short-term rentals: Over three years, short-term rentals (black dots) were highly concentrated in central London.
 
 * Rarity of long-term rentals: Long-term rentals (red dots) are relatively rare in London and are concentrated in central areas.
 
 ### 4 Number of Short-term and Long-term Rental Airbnb in each borough of London 2019-2021
- Visualize the number of short-term and long-term rental Airbnb listings in different boroughs of London for the years 2019, 2020, and 2021. 
 
 ```{python}
  MiniNumber2019 = geo_df_2019.groupby(['neighbourhood_cleansed', 
@@ -474,15 +439,7 @@ plt.show()
 
                                     (figure 5)
 
-This picture shows that between 2019 and 2021, the number of Airbnb short-term listings in the central areas (the areas with the deepest color blocks) decreased significantly.
-
-* In 2019, the central region had more than 400 listings, the highest concentration of listings.
-
-* In 2020, the number of listings in the central area decreases, peaking at around 350.
-
-* Through 2021, the number of listings in the central District continues to decrease, peaking below 175.
-
-* Overall, the number of short-term Airbnb listings fell in most areas of London from 2019 to 2021.
+This figure shows that between 2019 and 2021, the number of Airbnb short-term listings in the central areas (the areas with the deepest color blocks) decreased significantly.
 
 * Impact of COVID-19: The impact of the COVID-19 pandemic on the short-term rental market is evident from the data, with a noticeable decrease in the number of Airbnb listings between 2019 and 2021.   The timing of this decline suggests that hosts may have either removed their properties from the platform in response to diminished tourist flows or transitioned their listings to accommodate longer-term stays due to the pandemic's travel restrictions.
 
@@ -533,8 +490,6 @@ plt.show()
 * Consistency of distribution: Although the number varied, the distribution pattern of long-term rental Airbnb remained consistent over the three years, concentrating in the central area and gradually decreasing to the periphery.
 
 ### 5 Calculate the average price for each neighborhood from 2019-2021
-Calculates the average price of Airbnb listings in different neighborhoods for the years 2019, 2020, and 2021 using the groupby and mean functions.
-And merges these average price DataFrames with a GeoDataFrame called London based on the neighborhood information, creating new DataFrames named Neighborhood_price2019, Neighborhood_price2020, and Neighborhood_price2021.
 
 ```{python}
 average_prices2019 = listings_2019.groupby('neighbourhood_cleansed')[
@@ -595,15 +550,7 @@ plt.show()
                                     
                                     (figure 7)
 
-* In 2019, the average Airbnb price in some areas, such as the central District, was very high, reaching more than £200.
-
-* By 2020, the average price in these high-value areas had fallen, with the highest price range around £180.
-
-* In 2021, the high value area shrinks further and the price range drops further, with the maximum price not exceeding £500, but it is noted that the maximum range of the scale chart increases, indicating a greater difference in the price distribution.
-
 * Pricing Dynamics: Pricing dynamics in central boroughs show an initial high average price for Airbnb listings, with a downward trend observed over the same period.   This decrease in pricing may reflect a strategy by hosts to adapt to the lowered demand during the pandemic or to entice a broader market segment in the face of travel constraints.
-
-
 
 ### 6 Total death in 2020
 
@@ -628,7 +575,7 @@ data_2020_oct = pd.read_csv(data_2020_oct_path)
 data_2020_dec = pd.read_csv(data_2020_dec_path)
 ```
 
-### Covid-19 Death data in 2020
+
 
 ```{python}
 #  Read the Excel data
@@ -654,7 +601,7 @@ Death2020_dec = Death2020_df[(Death2020_df['Week'] > 'Week 48')
 & (Death2020_df['Week'] <= 'Week 53')].groupby('Geography')['death2020'].sum()
 ```
 
-### Covid-19 Infection data in 2020
+
 
 ```{python}
 Infection_2020_4 = 'https://raw.githubusercontent.com/yichengjiangucl/CASA0013-Group-Work/main/Infection4.csv'
@@ -679,7 +626,6 @@ Infection_2020_oct = pd.read_csv(Infection_2020_10)
 Infection_2020_dec = pd.read_csv(Infection_2020_12)
 ```
 
-Firstly, combine the death population in 2020 to a dataframe 
 
 ```{python}
 Death2020_feb_merge = pd.merge(London, Death2020_feb, how='left', 
@@ -701,7 +647,7 @@ Death2020_dec_merge = pd.merge(London, Death2020_dec, how='left',
 left_on='neighbourhood', right_on='Geography')
 ```
 
-Visualize Covid-19 deaths in different boroughs or areas of London in different months of 2020.
+### Visualize Covid-19 deaths in different boroughs or areas of London in different months of 2020.
 
 ```{python}
 # Create a figure with two rows and three columns of subplots
@@ -768,22 +714,7 @@ plt.show()
                                     
                                     (figure 8)
 
-* In 2019, the average Airbnb price in some areas, such as the central District, was very high, reaching more than £200.
-
-* By 2020, the average price in these high-value areas had fallen, with the highest price range around £180.
-
-* In 2021, the high value area shrinks further and the price range drops further, with the maximum price not exceeding £500, but it is noted that the maximum range of the scale chart increases, indicating a greater difference in the price distribution. 
-
-* February and April: February 2020 saw a relatively low number of deaths in London, but by April there was a significant increase in deaths in certain areas, particularly the central and northern areas, showing a deep hue.
-
-* June and August: In June, the number of deaths peaked in several regions, especially the central region. By August, however, the number of deaths dropped significantly and the overall tone lightened.
-
-* October and December: The number of deaths increased in October, but not as high as in June. In December, the number of deaths increased again in several regions, but still not as high as in June.
-
 ### 7 Short-term and Long-term Rental Airbnb location of London in 2020 monthly
-It first creates Point objects for Airbnb rental properties' longitude and latitude coordinates for each specific month.
-Then creates a GeoDataFrame (geo_df_2020_feb, geo_df_2020_apr, etc.) for each month's data.
-For each month, it plots a map of London using the London GeoDataFrame as the base map and overlays Airbnb rental properties.
 * Short-term Rentals (minimum_nights < 30): Represented by black circles.
 * Long-term Rentals (minimum_nights >= 30): Represented by red circles.
 
@@ -885,16 +816,7 @@ plt.show()
                                     
                                 (figure 9)
 
-* In February, the number and distribution of short-term rentals are relatively high, especially in the downtown areas.
-
-* By April, the number of short-term rentals decreased significantly, which may be related to the impact of the COVID-19 pandemic, as many countries began to implement travel restrictions and lockdowns at this point in time.
-
-* The June and August charts show that the number of short-term rentals has recovered somewhat, but remains below February levels.
-
-* By October and December, the distribution of short-term rentals was thinning again, likely due to the ongoing impact of the pandemic and seasonal changes in travel patterns.
-
-### 8 Number of Short-term and Long-term Rental Airbnb in each borough of London in 2020 monthly
-Rental data for different months are processed and combined to produce a dataset that includes geographic information and the number of short-term and long-term rentals
+### 8 Number of Short-term and Long-term Rental ### Airbnb in each borough of London in 2020 monthly
 
 ```{python}
 Merge2020_feb = geo_df_2020_feb.groupby(['neighbourhood_cleansed', 
@@ -1030,13 +952,6 @@ plt.show()
                                     
                                     (figure 10)
 
-* February: The number of short-term rental AirbnBs is higher and darker in certain central areas, especially the central areas.
-
-* April and June: As we move into April and June, the number of AirbnBs in the central area decreases significantly and the overall map becomes lighter in tone, especially in June.
-
-* August and October: By August and October, the number of AirbnBs in the central area had picked up, but not to the number seen in February.
-
-* December: The number of AirbnBs in the central region decreased further in December, showing a decreasing trend.
 
 ### Visualize long-term rental data for different months
 
@@ -1079,26 +994,6 @@ plt.show()
 ```
                                 (figure 11)
 
-* In February and April, certain central areas had a higher number of long-term rental AirbnBs, showing a darker hue.
-
-* By June, the number of these areas decreases and the overall map becomes lighter in tone.
-
-* In August, the number of central areas picked up somewhat, but remained below the levels of February and April.
-
-* In October and December, the number of long-term rental AirbnBs increased in some areas, but the overall number remained low.
-
-By examining the interplay between the distribution of listing types, geographic location of listings, and pricing trends:
-
-* Short-Term Rentals: The prevalence of short-term rentals suggests a robust tourism sector in London.   High concentrations in central areas underscore the demand for temporary lodging that provides immediate access to London's amenities.
-
-* Long-Term Rentals: The presence of longer-term stays may indicate that Airbnb is also serving those in need of temporary accommodations, such as students or professionals on short-term contracts.
-
-* Central vs. Peripheral Locations:
-- A central concentration may reflect that tourists are the primary clientele for Airbnb hosts.
-- Listings in residential areas could cater to a different type of visitor, such as business travelers or families and friends seeking a more localized experience in the city.
-
-High-density areas may lead to increased competition, affecting both price and the quality of listings. Saturation in certain areas could also prompt regulatory scrutiny or community opposition, as indicated by the data.
-
 In conclusion, an analysis of hosts and listing types through descriptive statistics, maps, and figures suggests that Airbnb lets in London are largely designed to serve short-term visitors looking for convenient access to the city's core areas.   However, there is also a market for long-term stays, which may have been influenced by the economic and travel disruptions caused by the pandemic.   Pricing adjustments over time reflect a competitive and adapting market in response to these external pressures.
 
 
@@ -1106,7 +1001,6 @@ In conclusion, an analysis of hosts and listing types through descriptive statis
 Well, in this part of illustration, we decide to imput Covid infection and death data in 2020, when London firstly experienced a tough time, into discussion.
 
 ### 9 Infection in 2020
-Combining data on COVID-19 infections in different communities in London with London map data, geospatial Visualization was then used to show the distribution of COVID-19 infections across London neighborhoods at different time points (April, June, August, October and December 2020).
 
 ```{python}
 Infection2020_apr_merge = pd.merge(London, 
@@ -1216,8 +1110,6 @@ Two major types for houses rental, short-term rent (within 30 days) and long-ter
 
 
 ### 10 Correlation Matrix
-Pull together different sets of Data, including Airbnb data, Death Data, and infection data.
-The absence of infection data from the February data was addressed and the infection data was merged into the combined results of the Airbnb data and the death data perform correlation analysis. For each month's data, it calculates correlations between Long-term Rental (long-term Rental), Short-term Rental (short-term rental), death2020 (death data), and infection (infection data), and visualizes the correlation matrix using heat maps. The title of each correlation matrix contains the corresponding month.
 
 ```{python}
 MiniAirbnb2020_feb_death = pd.merge(MiniAirbnb2020_feb, Death2020_feb, how='left', left_on='neighbourhood', right_on='Geography')
@@ -1227,15 +1119,12 @@ MiniAirbnb2020_aug_death = pd.merge(MiniAirbnb2020_aug, Death2020_aug, how='left
 MiniAirbnb2020_oct_death = pd.merge(MiniAirbnb2020_oct, Death2020_oct, how='left', left_on='neighbourhood', right_on='Geography')
 MiniAirbnb2020_dec_death = pd.merge(MiniAirbnb2020_dec, Death2020_dec, how='left', left_on='neighbourhood', right_on='Geography')
 
-
 ##Feburary infection data missing
 MiniAirbnb2020_apr_death_infection = pd.merge(MiniAirbnb2020_apr_death, Infection_2020_apr, how='left', left_on='neighbourhood', right_on='area')
 MiniAirbnb2020_jun_death_infection = pd.merge(MiniAirbnb2020_jun_death, Infection_2020_jun, how='left', left_on='neighbourhood', right_on='area')
 MiniAirbnb2020_aug_death_infection = pd.merge(MiniAirbnb2020_aug_death, Infection_2020_aug, how='left', left_on='neighbourhood', right_on='area')
 MiniAirbnb2020_oct_death_infection = pd.merge(MiniAirbnb2020_oct_death, Infection_2020_oct, how='left', left_on='neighbourhood', right_on='area')
 MiniAirbnb2020_dec_death_infection = pd.merge(MiniAirbnb2020_dec_death, Infection_2020_dec, how='left', left_on='neighbourhood', right_on='area')
-
-
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -1271,32 +1160,16 @@ plt.show()
                                     
                                     (figure 13)
 
-* Relevance of the rental market:
-April - The infection is on the order of 200 to 800, with the most severe infection in the central area.
+* Rental Market and Mortality: Long-term and short-term rentals show a positive correlation throughout the study period, reaching the highest in October (0.52). This suggests that these rental markets may be influenced by similar market forces or correlated in their performance.
 
-June - There has been a decrease in infections, with most areas in the order of 100 to 600 infections.
+* Rental Market and Infections: The correlation between long-term and short-term rentals and COVID-19 deaths in 2020 varies over different months but is generally negative or close to zero, indicating no strong direct relationship between the rental market and mortality.
 
-August - Further reduction in infections, with most regions in the order of 50 to 175, with a marked decline in the number of infections in the central region.
+* Deaths and Infections: The correlation between long-term rentals and infections varies monthly, showing mixed positive and negative values. Short-term rentals exhibit a strong negative correlation with infections in June but little correlation in other months.
 
-October - The number of infections has rebounded, returning to between 1,500 and 2,500 infections in several regions.
+* Time Trend: Strong positive correlations between deaths and infections are seen in April and June (0.84 and 0.74), indicating an increase in infections is associated with an increase in deaths. The correlations between rentals and infections change over time, with a shift from negative or near-zero correlations in April and June to positive correlations by August, reflecting potential market responses to the pandemic.
 
-December - The number of infections rose sharply, with almost all regions experiencing infections of an order of magnitude between 2,000 and 8,000, showing a significant increase in infections. 
+* Correlation with COVID-19 Data: Correlation matrices suggest a relationship between short-term rentals and COVID-19 infection rates, particularly in the early months of the pandemic. However, these correlations weaken over time, possibly due to travel restrictions and increased public health awareness.
 
-* Relationship between rental market and mortality: Long-term and short-term rentals remained positively correlated throughout the time period, reaching the highest in October (0.52). This means that these two types of rental markets may be affected by the same market forces, or their performance in the market may be correlated.
-
-
-* The relationship between rental market and the number of infections: The correlation between long - and short-term rentals and deaths in 2020 showed different patterns over different months, but for the most part, these values were negative or close to zero, suggesting that there is no strong direct relationship between the rental market and mortality.
-
-
-* Relation between deaths and infections: The correlation between long-term rentals and the number of infections varied little from month to month, sometimes positive (0.14 in August and 0.06 in October) and sometimes negative (-0.15 in April and -0.15 in June), which may indicate that there is not a consistent trend or relationship.
-Short-term rentals showed a strong negative correlation (-0.32) with the number of infections in June, but little correlation in other months.
-
-
-* Time trend: There was a strong positive correlation between deaths and infections in April and June (0.84 and 0.74, respectively), but this correlation dropped to 0.76 in December. Despite the decrease, it still indicates that the increase in the number of infections is in sync with the increase in the number of deaths. In April and June, the correlations between long-term and short-term rentals and the number of infections were negative or close to zero, while by August, these correlations turned positive, possibly reflecting a possible change in the market's response to the outbreak over time.
-
-* Correlation with COVID-19 Data: The correlation matrices suggest a relationship between the number of short-term rentals and COVID-19 infection rates, particularly in the early months of the pandemic. This might reflect the role of travel in the spread of the virus. However, the correlations weaken over time, possibly due to the implementation of travel restrictions and greater public health awareness.
-
-Furthermore, we gonna do analysis about the relation between various columns. It is what Correlation Matrix can help us. 
 Overall, we can see COVID deaths are stronly linked to infection, moreover, we can see pendemic may cause a negative influence on Airbnb market. 
 Focusing on the Correlation Matrix in April and June, it is the time when the COVID started, we can see negative values shown on the matrix, which daily news and announcements reporting COVID cause people’s panic and relutance to travel.
 After several months, the situation seen to be alleviated, however, the deaths data still shows nagative effect on the rental market, especially on the short-term type, but for the long-term houses are tend to be complusory and indispensible for target customers.
@@ -1326,17 +1199,17 @@ plt.show()
 ```
                                     (figure 14)
 
-* Relationship between long-term and short-term leases: The scatter plot shows that there is no obvious linear relationship between long-term and short-term leases, which means that the two leasing patterns may be relatively independent.
+* Long-term vs. Short-term Leases: The scatter plot indicates no clear linear relationship between long-term and short-term leases, suggesting their relative independence.
 
-* Relationship between long-term leases and deaths and infections: The number of long-term leases does not appear to have a clear linear relationship with the number of deaths and infections. This suggests that the number of long-term leases may not be the main factor influencing the number of COVID-19 deaths and infections.
+* Long-term Leases vs. Deaths and Infections: There is no apparent linear relationship between the number of long-term leases and COVID-19 deaths and infections, suggesting that long-term leases may not be a primary factor influencing these outcomes.
 
-* Relationship between short-term rentals and deaths and infections: The chart shows that there is also no clear linear relationship between the number of short-term rentals and the number of deaths and infections, although the regression line shows a slight positive or negative trend, the distribution of data points suggests that the relationship is not strong.
+* Short-term Rentals vs. Deaths and Infections: The chart reveals no strong linear relationship between short-term rentals and COVID-19 deaths and infections, with data points showing limited correlation.
 
-* Relationship between deaths and infections: It is expected that there is a positive correlation between the number of deaths and the number of infections, and the scatter plot and regression line show that as the number of infections increases, so does the number of deaths.
+* Deaths vs. Infections: As expected, there is a positive correlation between the number of deaths and infections, as shown by the scatter plot and regression line.
 
-In summary, the impact of COVID-19 on London's Airbnb market appears to be moderate, particularly affecting long-term rentals marginally more than short-term ones.   The most significant factor influencing rental trends is location, particularly proximity to the city center.   London's global significance has buffered its rental market against a complete downturn during the pandemic.   This resilience is evident in the data for inner London's short-term rentals, which initially experienced a decline but showed a relatively swift recovery within a few months.   Nevertheless, the overall trend in rental prices from 2019 to 2021 indicates a decrease, which could be seen as a favorable outcome for travelers.
+In summary, COVID-19 has had a moderate impact on London's Airbnb market, with long-term rentals slightly more affected than short-term ones. Location, especially proximity to the city center, remains the most significant influence on rental trends. London's global significance has helped maintain market resilience, as seen in the data for inner London's short-term rentals, which initially declined but swiftly recovered. Overall, rental prices from 2019 to 2021 have decreased, which can benefit travelers.
 
-This dataset can be instrumental in informing the regulation of Short-Term Lets (STL) in London by providing insights into the relationship between public health data and rental market dynamics.   Regulatory bodies could leverage this information to tailor STL policies that are responsive to health crises, ensuring that the rental market remains stable and that public health concerns are adequately addressed.   For example, in areas where higher COVID-19 rates correlate with decreases in short-term rentals, regulations could be adjusted to support rental market stability while prioritizing health and safety.   Additionally, the observed pricing trends could inform decisions on affordability and accessibility of housing during and after health emergencies.
+This dataset can inform Short-Term Lets (STL) regulation in London, offering insights into the link between public health data and rental market dynamics. Regulators can use this information to tailor policies responsive to health crises while ensuring rental market stability and public health. For instance, in areas where higher COVID-19 rates coincide with short-term rental decreases, regulations can be adjusted to balance stability with health and safety. Additionally, observed pricing trends can inform decisions regarding housing affordability and accessibility during and after health emergencies.
 
 ## References
 
